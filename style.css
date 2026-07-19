@@ -215,3 +215,20 @@ body, html {
     0%, 100% { opacity: 1; } 
     50% { opacity: 0.3; }
 }
+/* Fix for mobile navigation visibility */
+@media (max-width: 768px) {
+    .lightbox {
+        flex-direction: column;
+    }
+    
+    .nav {
+        position: absolute;
+        bottom: 20px;
+        z-index: 10001; /* High index to float on top */
+        background: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent background for visibility */
+        border-radius: 50%;
+    }
+    
+    .prev { left: 20px; }
+    .next { right: 20px; }
+}

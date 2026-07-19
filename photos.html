@@ -41,71 +41,60 @@
     
     <div class="system-label">SYSTEM_ID: ARCHIVE_01 | STATUS_ACTIVE</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const galleryContainer = document.getElementById('gallery-container');
-            const totalImages = 100; // Change this number if you want more or fewer later
-            let galleryHTML = '';
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const galleryContainer = document.getElementById('gallery-container');
+        const totalImages = 100;
+        let galleryHTML = '';
 
-            // Generate the 100 images
-            for (let i = 1; i <= totalImages; i++) {
-                galleryHTML += `<img src="https://picsum.photos/1200/800?random=${i}" alt="Archive Element ${i}">`;
-            }
-            galleryContainer.innerHTML = galleryHTML;
+        for (let i = 1; i <= totalImages; i++) {
+            galleryHTML += `<img src="https://picsum.photos/1200/800?random=${i}" alt="Archive Element ${i}">`;
+        }
+        galleryContainer.innerHTML = galleryHTML;
 
-            // Now that they exist, grab them for the lightbox
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const images = document.querySelectorAll('.gallery img');
-            const backBtn = document.getElementById('back-btn');
-            let currentIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const images = document.querySelectorAll('.gallery img');
+        const backBtn = document.getElementById('back-btn');
+        let currentIndex = 0;
 
-            // Trigger lightbox
-            images.forEach((img, index) => {
-                img.addEventListener('click', () => {
-                    lightbox.style.display = 'flex';
-                    lightboxImg.src = img.src;
-                    currentIndex = index;
-                });
-            });
+        // Navigation Functions
+        function showImage(index) {
+            currentIndex = (index + images.length) % images.length;
+            lightboxImg.src = images[currentIndex].src;
+        }
 
-            // Smart Back logic
-            backBtn.addEventListener('click', (e) => {
-                if (lightbox.style.display === 'flex') {
-                    e.preventDefault(); 
-                    lightbox.style.display = 'none';
-                }
-            });
-
-            // Background click exit
-            lightbox.addEventListener('click', (e) => {
-                if (e.target === lightbox) {
-                    lightbox.style.display = 'none';
-                }
-            });
-
-            // Arrow button navigation
-            document.querySelector('.next').addEventListener('click', (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex + 1) % images.length;
-                lightboxImg.src = images[currentIndex].src;
-            });
-
-            document.querySelector('.prev').addEventListener('click', (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex - 1 + images.length) % images.length;
-                lightboxImg.src = images[currentIndex].src;
-            });
-
-            // Keyboard navigation
-            document.addEventListener('keydown', (e) => {
-                if (lightbox.style.display === 'flex') {
-                    if (e.key === 'ArrowRight') document.querySelector('.next').click();
-                    if (e.key === 'ArrowLeft') document.querySelector('.prev').click();
-                    if (e.key === 'Escape') backBtn.click();
-                }
+        // Click Open
+        images.forEach((img, index) => {
+            img.addEventListener('click', () => {
+                lightbox.style.display = 'flex';
+                showImage(index);
             });
         });
-    </script>
+
+        // Click Controls
+        document.querySelector('.next').addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
+        document.querySelector('.prev').addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
+
+        // --- SWIPE LOGIC FOR MOBILE ---
+        let touchStartX = 0;
+        lightbox.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        lightbox.addEventListener('touchend', (e) => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > 50) { // Threshold for swipe
+                if (diff > 0) showImage(currentIndex + 1); // Swiped Left
+                else showImage(currentIndex - 1);         // Swiped Right
+            }
+        });
+
+        // Close on background
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; });
+    });
+</script>
 </body>
 </html>
