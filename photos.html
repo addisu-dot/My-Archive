@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Collection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="gallery-header">
+        <h2>SELECTED WORKS</h2>
+    </header>
+    
+    <!-- Empty container, JS will fill this -->
+    <div class="gallery" id="gallery-container"></div>
+
+    <!-- Controls -->
+    <a href="index.html" id="back-btn" class="btn-neon back-fixed">BACK</a>
+    <button onclick="window.location.reload()" class="btn-neon refresh-fixed">REFRESH</button>
+
+    <!-- The Void -->
+    <div id="lightbox" class="lightbox">
+        <button class="nav prev" aria-label="Previous image">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+                <path d="M70 20 L30 50 L70 80" fill="none" stroke="#0ff" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="50" cy="50" r="45" stroke="#0ff" stroke-width="2" fill="none" class="pulse-ring"/>
+            </svg>
+        </button>
+
+        <img src="" alt="Zoomed View" id="lightbox-img">
+
+        <button class="nav next" aria-label="Next image">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+                <path d="M30 20 L70 50 L30 80" fill="none" stroke="#0ff" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="50" cy="50" r="45" stroke="#0ff" stroke-width="2" fill="none" class="pulse-ring"/>
+            </svg>
+        </button>
+        
+        <div class="stream-label">FILE_INDEX_STREAM_ACTIVE</div>
+    </div>
+    
+    <div class="system-label">SYSTEM_ID: ARCHIVE_01 | STATUS_ACTIVE</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryContainer = document.getElementById('gallery-container');
+            const totalImages = 100; // Change this number if you want more or fewer later
+            let galleryHTML = '';
+
+            // Generate the 100 images
+            for (let i = 1; i <= totalImages; i++) {
+                galleryHTML += `<img src="https://picsum.photos/1200/800?random=${i}" alt="Archive Element ${i}">`;
+            }
+            galleryContainer.innerHTML = galleryHTML;
+
+            // Now that they exist, grab them for the lightbox
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const images = document.querySelectorAll('.gallery img');
+            const backBtn = document.getElementById('back-btn');
+            let currentIndex = 0;
+
+            // Trigger lightbox
+            images.forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    lightbox.style.display = 'flex';
+                    lightboxImg.src = img.src;
+                    currentIndex = index;
+                });
+            });
+
+            // Smart Back logic
+            backBtn.addEventListener('click', (e) => {
+                if (lightbox.style.display === 'flex') {
+                    e.preventDefault(); 
+                    lightbox.style.display = 'none';
+                }
+            });
+
+            // Background click exit
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.style.display = 'none';
+                }
+            });
+
+            // Arrow button navigation
+            document.querySelector('.next').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex + 1) % images.length;
+                lightboxImg.src = images[currentIndex].src;
+            });
+
+            document.querySelector('.prev').addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                lightboxImg.src = images[currentIndex].src;
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'ArrowRight') document.querySelector('.next').click();
+                    if (e.key === 'ArrowLeft') document.querySelector('.prev').click();
+                    if (e.key === 'Escape') backBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

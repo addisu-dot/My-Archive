@@ -1,0 +1,217 @@
+/* --- BASE & GLOBALS --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body, html { 
+    margin: 0; 
+    padding: 0; 
+    min-height: 100vh; 
+    overflow-x: hidden; 
+    background: #000; 
+    color: #fff; 
+    font-family: 'Segoe UI', sans-serif; 
+}
+
+/* --- INTERACTIVE CANVAS --- */
+#bgCanvas { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    z-index: -1; 
+}
+
+/* --- TYPOGRAPHY & HERO --- */
+.hero {
+    height: 100vh; 
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(26, 26, 46, 0.8) 0%, rgba(5, 5, 5, 0.8) 70%);
+    padding: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(4rem, 8vw, 8rem);
+    letter-spacing: -2px; 
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #0ff, #fff);
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #ccc;
+}
+
+/* --- NEON BUTTONS --- */
+.btn-neon {
+    display: inline-block;
+    padding: 20px 50px; 
+    color: #0ff; 
+    background: transparent;
+    border: 2px solid #0ff; 
+    border-radius: 50px; 
+    text-transform: uppercase;
+    text-decoration: none; 
+    cursor: pointer; 
+    transition: 0.4s ease;
+    box-shadow: 0 0 15px #0ff; 
+    z-index: 1001; 
+    animation: constant-glow 2s infinite alternate;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.btn-neon:hover {
+    background: #0ff; 
+    color: #000; 
+    transform: scale(1.05);
+    box-shadow: 0 0 40px #0ff, 0 0 80px #0ff;
+}
+
+.back-fixed, .refresh-fixed {
+    position: fixed; 
+    bottom: 20px; 
+    z-index: 9999;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+}
+
+.back-fixed { left: 20px; }
+.refresh-fixed { right: 20px; }
+
+/* --- GALLERY PAGES --- */
+.gallery-header {
+    padding: 60px 20px 30px;
+    text-align: center;
+}
+
+.gallery-header h2 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin: 0;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.gallery {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px; 
+    padding: 20px 5vw 100px;
+}
+
+.gallery img {
+    width: 100%; 
+    height: 400px; 
+    object-fit: cover;
+    border-radius: 12px; 
+    filter: grayscale(40%); 
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.gallery img:hover {
+    filter: grayscale(0%); 
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.2);
+    border: 1px solid rgba(0, 255, 255, 0.5);
+}
+
+/* --- LIGHTBOX (VOID) --- */
+.lightbox {
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    background: rgba(5, 5, 5, 0.95);
+    z-index: 10000;
+    justify-content: center; 
+    align-items: center;
+}
+
+.lightbox img {
+    max-width: 85vw; 
+    max-height: 80vh; 
+    border-radius: 8px;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.15); 
+    border: 1px solid #0ff;
+    object-fit: contain;
+}
+
+.lightbox::after {
+    content: ""; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 2px;
+    background: #0ff; 
+    opacity: 0.15; 
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+}
+
+/* --- NAVIGATION & UI ELEMENTS --- */
+.nav {
+    background: transparent; 
+    border: none;
+    color: #0ff; 
+    cursor: pointer; 
+    transition: 0.3s ease;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav:hover { 
+    transform: scale(1.1); 
+    filter: drop-shadow(0 0 10px #0ff);
+}
+
+.pulse-ring {
+    animation: blink 2s infinite;
+}
+
+.stream-label {
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    color: #0ff; 
+    font-family: monospace; 
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.system-label {
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    font-family: monospace; 
+    color: #0ff; 
+    animation: blink 1s step-end infinite;
+    pointer-events: none;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes constant-glow {
+    from { box-shadow: 0 0 10px #0ff; }
+    to { box-shadow: 0 0 25px #0ff; }
+}
+
+@keyframes scan {
+    0% { top: 0%; } 
+    100% { top: 100%; }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0.3; }
+}
