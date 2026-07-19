@@ -1,60 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('bgCanvas');
     if (!canvas) return;
-    
     const ctx = canvas.getContext('2d');
-    
-    // Auto-resize canvas when window changes
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+
+    let width, height;
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    window.addEventListener('resize', resize);
+    resize();
 
     const particles = [];
-    const particleCount = 100;
+    const particleCount = 80; // Keep it low for mobile performance
 
     for (let i = 0; i < particleCount; i++) {
         particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: Math.random() - 0.5,
-            vy: Math.random() - 0.5
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2 + 1
         });
     }
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = 0.5;
+        ctx.fillStyle = 'rgba(5, 5, 5, 0.2)'; // Dark subtle fade
+        ctx.fillRect(0, 0, width, height);
+        
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.15)';
+        ctx.fillStyle = '#0ff';
 
-        particles.forEach(p => {
+        for (let i = 0; i < particles.length; i++) {
+            let p = particles[i];
             p.x += p.vx;
             p.y += p.vy;
 
-            // Bounce off screen edges
-            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            // Bounce
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
 
+            // Draw node
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-            ctx.fillStyle = '#0ff';
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fill();
-        });
 
-        // Connect nearby nodes
-        for (let i = 0; i < particles.length; i++) {
+            // Connect nearby nodes
             for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const distance = Math.hypot(dx, dy);
-
-                if (distance < 100) {
+                let p2 = particles[j];
+                let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                if (dist < 150) {
                     ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    // Fade lines out as nodes get further apart
-                    ctx.strokeStyle = `rgba(0, 255, 255, ${1 - distance / 100})`;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p2.x, p2.y);
                     ctx.stroke();
                 }
             }

@@ -6,9 +6,8 @@
     <title>THE NEON ARCHIVE</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <canvas id="bgCanvas"></canvas>
-
+<body class="moving-bg">
+    
     <main class="hero">
         <div class="system-label">SYSTEM_ID: ARCHIVE_MAIN | STATUS_ACTIVE</div>
         <h1>THE ARCHIVE</h1>
@@ -16,6 +15,17 @@
         <a href="photos.html" class="btn-neon">ENTER THE VOID</a>
     </main>
 
-    <script src="script.js"></script>
+    <script>
+        const images = [
+            'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000',
+            'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=2000',
+            'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?q=80&w=2000',
+            'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000',
+            'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000'
+        ];
+
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        document.body.style.backgroundImage = `url('${randomImage}')`;
+    </script>
 </body>
 </html>
