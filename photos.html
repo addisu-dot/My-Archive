@@ -3,98 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visual Collection</title>
+    <title>Gallery | The Archive</title>
+    <meta name="description" content="A photo gallery with a full-screen viewer. Swipe on mobile, use arrow keys on desktop.">
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%2300ffff' stroke-width='3'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="gallery-header">
-        <h2>SELECTED WORKS</h2>
+        <h1>Selected works</h1>
+        <p class="gallery-count" id="gallery-count" aria-live="polite"></p>
     </header>
-    
-    <!-- Empty container, JS will fill this -->
-    <div class="gallery" id="gallery-container"></div>
 
-    <!-- Controls -->
-    <a href="index.html" id="back-btn" class="btn-neon back-fixed">BACK</a>
-    <button onclick="window.location.reload()" class="btn-neon refresh-fixed">REFRESH</button>
+    <main>
+        <div class="gallery" id="gallery-container"></div>
+    </main>
 
-    <!-- The Void -->
-    <div id="lightbox" class="lightbox">
-        <button class="nav prev" aria-label="Previous image">
-            <svg width="60" height="60" viewBox="0 0 100 100">
+    <nav class="gallery-controls" aria-label="Gallery controls">
+        <a href="index.html" class="btn-neon">Back</a>
+        <button type="button" id="shuffle-btn" class="btn-neon">Shuffle</button>
+    </nav>
+
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+        <button type="button" class="lb-close" id="lb-close" aria-label="Close viewer">&times;</button>
+        <button type="button" class="nav prev" aria-label="Previous photo">
+            <svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true">
                 <path d="M70 20 L30 50 L70 80" fill="none" stroke="#0ff" stroke-width="8" stroke-linecap="round"/>
                 <circle cx="50" cy="50" r="45" stroke="#0ff" stroke-width="2" fill="none" class="pulse-ring"/>
             </svg>
         </button>
 
-        <img src="" alt="Zoomed View" id="lightbox-img">
+        <figure class="lb-figure">
+            <img src="" alt="" id="lightbox-img">
+            <figcaption id="lightbox-caption"></figcaption>
+        </figure>
 
-        <button class="nav next" aria-label="Next image">
-            <svg width="60" height="60" viewBox="0 0 100 100">
+        <button type="button" class="nav next" aria-label="Next photo">
+            <svg width="60" height="60" viewBox="0 0 100 100" aria-hidden="true">
                 <path d="M30 20 L70 50 L30 80" fill="none" stroke="#0ff" stroke-width="8" stroke-linecap="round"/>
                 <circle cx="50" cy="50" r="45" stroke="#0ff" stroke-width="2" fill="none" class="pulse-ring"/>
             </svg>
         </button>
-        
-        <div class="stream-label">FILE_INDEX_STREAM_ACTIVE</div>
     </div>
-    
-    <div class="system-label">SYSTEM_ID: ARCHIVE_01 | STATUS_ACTIVE</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const galleryContainer = document.getElementById('gallery-container');
-        const totalImages = 100;
-        let galleryHTML = '';
-
-        for (let i = 1; i <= totalImages; i++) {
-            galleryHTML += `<img src="https://picsum.photos/1200/800?random=${i}" alt="Archive Element ${i}">`;
-        }
-        galleryContainer.innerHTML = galleryHTML;
-
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const images = document.querySelectorAll('.gallery img');
-        const backBtn = document.getElementById('back-btn');
-        let currentIndex = 0;
-
-        // Navigation Functions
-        function showImage(index) {
-            currentIndex = (index + images.length) % images.length;
-            lightboxImg.src = images[currentIndex].src;
-        }
-
-        // Click Open
-        images.forEach((img, index) => {
-            img.addEventListener('click', () => {
-                lightbox.style.display = 'flex';
-                showImage(index);
-            });
-        });
-
-        // Click Controls
-        document.querySelector('.next').addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex + 1); });
-        document.querySelector('.prev').addEventListener('click', (e) => { e.stopPropagation(); showImage(currentIndex - 1); });
-
-        // --- SWIPE LOGIC FOR MOBILE ---
-        let touchStartX = 0;
-        lightbox.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        lightbox.addEventListener('touchend', (e) => {
-            let touchEndX = e.changedTouches[0].screenX;
-            let diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > 50) { // Threshold for swipe
-                if (diff > 0) showImage(currentIndex + 1); // Swiped Left
-                else showImage(currentIndex - 1);         // Swiped Right
-            }
-        });
-
-        // Close on background
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; });
-    });
-</script>
+    <script src="photos-data.js"></script>
+    <script src="gallery.js"></script>
 </body>
 </html>
