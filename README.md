@@ -50,7 +50,7 @@ window.PHOTOS = [
 
 Tip: resize thumbnails to about 600px wide so the page loads fast. `full` and `caption` are optional.
 
-The gallery currently shows 24 placeholder images from [picsum.photos](https://picsum.photos).
+The gallery currently shows 24 generated placeholder images stored in `photos/`. Replace them with your own.
 
 ## Customize
 
